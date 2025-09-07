@@ -1,0 +1,28 @@
+#week-2
+# Convert columns to numeric, coercing errors to NaN
+for col in data.columns:
+    data[col] = pd.to_numeric(data[col], errors='coerce')
+
+# Drop columns that are entirely NaN
+data_cleaned = data.dropna(axis=1, how='all')
+
+#plot the results
+plt.figure(figsize=(12,6))
+sns.heatmap(data_cleaned.corr(), annot=True, cmap="viridis")
+plt.xlabel("Date")
+plt.ylabel("Air Quality")
+plt.title('Air Quality Over Time')
+plt.show()
+# Assuming 'CO(GT)' is the target variable for AQI prediction
+X = data.drop("CO(GT)", axis=1)
+y = data["CO(GT)"]
+
+# Drop rows where the target variable 'CO(GT)' is NaN
+data_cleaned = data.dropna(subset=["CO(GT)"])
+X = data_cleaned.drop("CO(GT)", axis=1)
+y = data_cleaned["CO(GT)"]
+# Split the data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+scaler=StandardScaler()
+X_train=scaler.fit_transform(X_train)
+X_test=scaler.transform(X_test)
